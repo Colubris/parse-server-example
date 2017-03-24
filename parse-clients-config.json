@@ -1,0 +1,44 @@
+{
+  "apps": [{
+              "appName": "App",
+              "databaseURI": "mongodb://....",
+              "cloud": "./cloud/main.js",
+              "appId": "",
+              "masterKey": "",
+              "javascriptKey": "",
+              "restAPIKey": "",
+              "dotNetKey": "",
+              "clientKey": "",
+              "fileKey": "",
+              "serverURL": "",
+              "port": 1361,
+              "production": true,
+              "emailAdapter": {
+                "module": "parse-server-simple-mailgun-adapter",
+                "options": {
+                    "fromAddress": "no-reply@colubris.com.br",
+                    "apiKey": "",
+                    "domain": ""
+                }
+              },
+              "push": {
+                "android": {
+                    "senderId": "{SENDER_ID_KEY}",
+                    "apiKey": "{ANDROID_API_KEY}"
+                },
+                "ios": [
+                  {
+                    "pfx": "../pushcerts/DevCertificate.p12",
+                    "bundleId": "com.app",
+                    "production": false
+                  },
+                  {
+                    "pfx": "../pushcerts/ProdCertificate.p12",
+                    "bundleId": "com.app",
+                    "production": true
+                  }
+                ]
+              }
+            }
+        ]
+}
