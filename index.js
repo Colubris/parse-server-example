@@ -1,5 +1,5 @@
 // Colubris express application adding the parse-server module to expose Parse
-// compatible API routes.
+// compatible API routes and services.
 
 var SimpleMailgunAdapter = require('parse-server-simple-mailgun-adapter')
 
@@ -19,31 +19,31 @@ process.env.VERBOSE_PARSE_SERVER_PUSH_ADAPTER=true;
 var config = require('./parse-clients-config.json');
 var clients = config.apps;
 
-for (var i in clients) {
-    var client = clients[i];
-    var port = client.port;
-    var name = client.appName;
-    var serverURL = client.serverURL;
-    var api = new ParseServer(client);
-    var app = express();
+var i = process.argv.slice(2);
 
-    // Serve static assets from the /public folder
-    app.use('/public', express.static(path.join(__dirname, '/public')));
+var client = clients[i];
+var port = client.port;
+var name = client.appName;
+var serverURL = client.serverURL;
+var api = new ParseServer(client);
+var app = express();
 
-    // Serve the Parse API on the /parse URL prefix
-    var chunks = serverURL.split('/')
-    var mountPath = '/' + chunks[chunks.length - 2];
-    app.use(mountPath, api);
+// Serve static assets from the /public folder
+app.use('/public', express.static(path.join(__dirname, '/public')));
 
-    // Parse Server plays nicely with the rest of your web routes
-    app.get('/', function(req, res) {
-      res.status(200).send('I\'m a monster!');
-    });
+// Serve the Parse API on the /parse URL prefix
+var chunks = serverURL.split('/')
+var mountPath = '/' + chunks[chunks.length - 2];
+app.use(mountPath, api);
 
-    var httpServer = require('http').createServer(app);
-    httpServer.listen(port, function() {});
-    console.log(name + ' running on port ' + port + '.');
+// Parse Server plays nicely with the rest of your web routes
+app.get('/', function(req, res) {
+  res.status(200).send('I\'m a monster!');
+});
 
-    // This will enable the Live Query real-time server
-    ParseServer.createLiveQueryServer(httpServer);
-}
+var httpServer = require('http').createServer(app);
+httpServer.listen(port, function() {});
+console.log(name + ' running on port ' + port + '.');
+
+// This will enable the Live Query real-time server
+ParseServer.createLiveQueryServer(httpServer);
